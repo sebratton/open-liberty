@@ -39,6 +39,7 @@ import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.apache.cxf.jaxrs.model.ApplicationInfo;
 import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.jaxrs.model.OperationResourceInfo;
+import org.apache.cxf.jaxrs.spring.SpringResourceFactory;
 import org.apache.cxf.jaxrs.utils.AnnotationUtils;
 import org.apache.cxf.jaxrs.utils.InjectionUtils;
 import org.apache.cxf.message.Exchange;
@@ -74,6 +75,7 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
     private final JaxRsModuleMetaData moduleMetadata;
     private ServletConfig servletConfig;
     private JaxRsProviderFactoryService providerFactoryService;
+    private final boolean isSpringBootEnvironment = Boolean.getBoolean("com.ibm.ws.liberty.boot.enabled");
 
     private final static Integer lockObject = new Integer(0);
 
@@ -432,11 +434,17 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
                          * if the resource's constructor has params, the resource will be handled as singleton object with provider
                          */
 
-                        if (isJaxRsProvider == true && null != singletonProviderInstance) {
-                            pr = new SingletonResourceProvider(singletonProviderInstance);
-                            singletonProviderAndPathInfos.add(new ProviderResourceInfo(singletonProviderInstance, true, isJaxRsProvider));
+                        if (!isSpringBootEnvironment) {
+                            if (isJaxRsProvider == true && null != singletonProviderInstance) {
+                                pr = new SingletonResourceProvider(singletonProviderInstance);
+                                singletonProviderAndPathInfos.add(new ProviderResourceInfo(singletonProviderInstance, true, isJaxRsProvider));
+                            } else {
+                                pr = new PerRequestResourceProvider(clazz);
+                                perRequestProviderAndPathInfos.add(new ProviderResourceInfo(clazz, true, isJaxRsProvider));
+                            }
                         } else {
-                            pr = new PerRequestResourceProvider(clazz);
+                            //running in a spring boot managed environment
+                            pr = new SpringResourceFactory(clazz.getName());
                             perRequestProviderAndPathInfos.add(new ProviderResourceInfo(clazz, true, isJaxRsProvider));
                         }
 
@@ -571,11 +579,17 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
                          * if the resource's constructor has params, the resource will be handled as singleton object with provider
                          */
                         ResourceProvider pr = null;
-                        if (isJaxRsProvider == true && null != singletonProviderInstance) {
-                            pr = new SingletonResourceProvider(singletonProviderInstance);
-                            singletonProviderAndPathInfos.add(new ProviderResourceInfo(clazz, true, isJaxRsProvider));
+                        if (!isSpringBootEnvironment) {
+                            if (isJaxRsProvider == true && null != singletonProviderInstance) {
+                                pr = new SingletonResourceProvider(singletonProviderInstance);
+                                singletonProviderAndPathInfos.add(new ProviderResourceInfo(clazz, true, isJaxRsProvider));
+                            } else {
+                                pr = new PerRequestResourceProvider(clazz);
+                                perRequestProviderAndPathInfos.add(new ProviderResourceInfo(clazz, true, isJaxRsProvider));
+                            }
                         } else {
-                            pr = new PerRequestResourceProvider(clazz);
+                            //running in a spring boot managed environment
+                            pr = new SpringResourceFactory(clazz.getName());
                             perRequestProviderAndPathInfos.add(new ProviderResourceInfo(clazz, true, isJaxRsProvider));
                         }
 
