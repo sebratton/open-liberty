@@ -1,0 +1,47 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.6.RELEASE'
+}
+
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.ibm.ws.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-aop')
+}
+
+repositories {
+    mavenCentral()
+}
+repositories {
+	maven {
+		url 'https://na.artifactory.swg-devops.com:443/artifactory/wh-whia-plugins-release'
+		credentials {
+			username = "sbratton@us.ibm.com"
+			password = "AKCp5bAtGSm72pqzq4GLJweMNTLBYRW6kkSDrZqvzAj629cFmKhXdoSyPDz5sAzyadVuRozx4"
+		}
+	}
+
+}
+dependencies {
+	//Check for the latest version here: http://plugins.gradle.org/plugin/com.jfrog.artifactory
+	classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
+}
+
+apply plugin: "com.jfrog.artifactory"
+artifactory {
+	contextUrl = "https://na.artifactory.swg-devops.com:443/artifactory"   //The base Artifactory URL if not overridden by the publisher/resolver
+	resolve {
+		repository {
+			repoKey = 'ip-clt-build-dev-jcenter-gradle-virtual'
+			username = "sbratton@us.ibm.com"
+			password = "AKCp5bAtGSm72pqzq4GLJweMNTLBYRW6kkSDrZqvzAj629cFmKhXdoSyPDz5sAzyadVuRozx4"
+			maven = true
+
+		}
+	}
+}
