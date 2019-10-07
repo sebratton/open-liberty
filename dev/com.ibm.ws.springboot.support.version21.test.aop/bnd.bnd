@@ -33,5 +33,5 @@ javac.target: 1.8
 # corresponding entry in file cnf/oss_depenendcies.maven.
 # Ref: https://bndtools.org/manual/packageexplorer.html
 -testpath: \
-	org.springframework:spring-boot-starter-web;strategy=exact;version=2.1.6.RELEASE, \
+	org.springframework:spring-boot-starter-web;strategy=exact;version=1.5.9.RELEASE, \
 	org.springframework:spring-boot-starter-aop;strategy=exact;version=2.1.6.RELEASE
