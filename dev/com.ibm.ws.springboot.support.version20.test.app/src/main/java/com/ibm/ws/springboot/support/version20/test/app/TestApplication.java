@@ -10,19 +10,39 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.version20.test.app;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @SpringBootApplication
 @RestController
 public class TestApplication {
+    
+    
+    @Component
+    private final class MyFinal {
+
+        public String message() {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            new Exception().printStackTrace(pw);
+            return "my final message.<br>" + sw.toString();
+        }
+        
+    }
+    
 	public static final String TEST_ATTR = "test.weblistener.attr";
 	@Autowired
 	ServletContext context; 
@@ -30,6 +50,9 @@ public class TestApplication {
 	@Autowired
 	private Environment env;
 
+	@Autowired
+	private MyFinal myFinal;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(TestApplication.class, args);
 		for(String arg: args) {
@@ -41,7 +64,8 @@ public class TestApplication {
 
 	@RequestMapping("/")
 	public String hello() {
-		return "HELLO SPRING BOOT!!";
+
+		return "HELLO SPRING BOOT!!" + " This is  " + myFinal.message();
 	}
 	
 	@RequestMapping(value="/buttonClicked", produces="text/html")
@@ -98,6 +122,5 @@ public class TestApplication {
 			e.printStackTrace(System.out);
 		}
 		return "SPRING BOOT, YOU GOT" + ((null==clazz) ? " NO " : " ") + "CLAZZ: " + clazzName;
-	}
-	
+	}	
 }
