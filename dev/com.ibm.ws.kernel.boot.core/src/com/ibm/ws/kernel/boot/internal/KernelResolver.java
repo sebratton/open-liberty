@@ -35,8 +35,8 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
-import org.atomos.framework.AtomosLayer;
-import org.atomos.framework.AtomosRuntime;
+import org.apache.felix.atomos.runtime.AtomosLayer;
+import org.apache.felix.atomos.runtime.AtomosRuntime;
 import org.osgi.framework.Constants;
 import org.osgi.framework.connect.ConnectContent;
 
@@ -280,7 +280,7 @@ public class KernelResolver {
         Set<String> libertyBootSymbolicNames = new HashSet<String>();
         for (ManifestCacheElement element : cache.getManifestElements()) {
             for (KernelBundleElement b : element.getBundleElements()) {
-                // For boot.jar types liberty boot uses the LIBERTY_BOOT startlevel
+                // For boot.jar types liberty boot uses the LIBERTY_BOOT start level
                 if (b.getStartLevel() == KernelStartLevel.LIBERTY_BOOT.getLevel()) {
                     libertyBootSymbolicNames.add(b.getSymbolicName());
                 }
@@ -289,7 +289,7 @@ public class KernelResolver {
         AtomosLayer bootLayer = ((AtomosRuntime) atomosRuntime).getBootLayer();
         final StringBuilder packageBuilder = packages == null ? new StringBuilder() : new StringBuilder(packages);
         libertyBootSymbolicNames.forEach((s) -> {
-            bootLayer.findAtomosBundle(s).filter((b) -> !Constants.SYSTEM_BUNDLE_LOCATION.equals(b.getLocation())).ifPresent((b) -> {
+            bootLayer.findAtomosContent(s).filter((b) -> !Constants.SYSTEM_BUNDLE_LOCATION.equals(b.getAtomosLocation())).ifPresent((b) -> {
                 ConnectContent content = b.getConnectContent();
                 Manifest mf = BootstrapManifest.getManifestFromContent(content);
                 String mPkgs = mf.getMainAttributes().getValue(MANIFEST_EXPORT_PACKAGE);

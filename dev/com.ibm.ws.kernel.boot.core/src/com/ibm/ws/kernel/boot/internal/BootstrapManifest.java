@@ -26,8 +26,9 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
-import org.atomos.framework.AtomosBundleInfo;
-import org.atomos.framework.AtomosRuntime;
+import org.apache.felix.atomos.impl.runtime.base.AtomosRuntimeBase.AtomosLayerBase.AtomosContentClassPath;
+import org.apache.felix.atomos.runtime.AtomosContent;
+import org.apache.felix.atomos.runtime.AtomosRuntime;
 import org.osgi.framework.connect.ConnectContent;
 
 import com.ibm.ws.kernel.boot.BootstrapConfig;
@@ -104,7 +105,7 @@ public class BootstrapManifest {
     }
 
     private static Attributes getLibertyBootAttributes(Object at) {
-        AtomosBundleInfo atomosBundle = ((AtomosRuntime) at).getBootLayer().findAtomosBundle(KERNEL_BOOT_NAME).orElseThrow(() -> new IllegalStateException("No kernel boot found."));
+        AtomosContent atomosBundle = ((AtomosRuntime) at).getBootLayer().findAtomosContent(KERNEL_BOOT_NAME).orElseThrow(() -> new IllegalStateException("No kernel boot found."));
         ConnectContent content = atomosBundle.getConnectContent();
         return getManifestFromContent(content).getMainAttributes();
     }
@@ -272,8 +273,8 @@ public class BootstrapManifest {
                     }, pkgListFileNames);
                 }
             } else {
-                AtomosBundleInfo atomosBundle = ((AtomosRuntime) atomosRuntime).getBootLayer().findAtomosBundle(KERNEL_BOOT_NAME).orElseThrow(() -> new IllegalStateException("No kernel boot found."));
-                ConnectContent content = atomosBundle.getConnectContent();
+                AtomosContent atomosBundle = ((AtomosRuntime) atomosRuntime).getBootLayer().findAtomosContent(KERNEL_BOOT_NAME).orElseThrow(() -> new IllegalStateException("No kernel boot found."));
+                ConnectContent content = ((AtomosContentClassPath) atomosBundle).getConnectContent();
                 content.open();
                 try {
                     return getMergedSystemProperties((p) -> {

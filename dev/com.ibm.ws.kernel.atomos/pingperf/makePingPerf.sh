@@ -3,13 +3,13 @@ set -xe
 rm -rf build/
 mkdir -p ./build/temp
 rm -rf ../../build.image/wlp/usr/servers/defaultServer/
-mkdir ../../build.image/wlp/usr/servers/defaultServer/
+mkdir -p ../../build.image/wlp/usr/servers/defaultServer/
 
 # copy over server config and feature definition for to prepare for server package
-for x in `find wlp -type f` 
+for x in `find pingPerfApp -type f` 
 do  
-  rm -f ../../build.image/$x
-  cp $x ../../build.image/$x
+  rm -f ../../build.image/${x/pingPerfApp/wlp}
+  cp $x ../../build.image/${x/pingPerfApp/wlp}
 done
 ../../build.image/wlp/bin/server package defaultServer --archive=`pwd`/build/temp/minifiedPingPerfWlp.zip --include=minify
 
@@ -37,7 +37,7 @@ do
 done
 set +x
 
-cp ../../cnf/staging/repository/com/ibm/ws/org/atomos/atomos.framework/0.0.1/atomos.framework-0.0.1.jar $cpl
+cp ../../cnf/staging/repository/org/apache/felix/org.apache.felix.atomos.runtime/0.0.1.SNAPSHOT/org.apache.felix.atomos.runtime-0.0.1.SNAPSHOT.jar $cpl
 cp ../../build.image/wlp/lib/com.ibm.ws.kernel.atomos_*.jar $cpl
 
 rm -f build/wlp/lib/*.jar
@@ -72,5 +72,5 @@ EOF
 chmod a+x ./build/launchPingPerf.sh
 echo -e "\n  COMPLETED\n"
 
-echo -e "Launch server with ./build/launchPingPerf.sh\n  URLs: http://localhost:9080/ping/ping/{greeting|simple}"
+echo -e "Launch server with ./build/launchPingPerf.sh\n  URLs: http://localhost:9080/ping/ping/greeting\n        http://localhost:9080/ping/ping/simple"
 

@@ -34,5 +34,5 @@ publish.wlp.jar.disabled: true
 	com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.ws.org.atomos:atomos.framework;verson=0.0.1
+	org.apache.felix.atomos.runtime;version=latest
 

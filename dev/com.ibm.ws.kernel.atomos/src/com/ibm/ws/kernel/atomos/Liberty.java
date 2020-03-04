@@ -13,7 +13,7 @@ package com.ibm.ws.kernel.atomos;
 import java.io.File;
 import java.util.Map;
 
-import org.atomos.framework.AtomosRuntime;
+import org.apache.felix.atomos.runtime.AtomosRuntime;
 
 import com.ibm.ws.kernel.boot.BootstrapConfig;
 import com.ibm.ws.kernel.boot.Launcher;
@@ -41,8 +41,8 @@ public class Liberty {
                 BootstrapConfig config = new BootstrapConfig() {
                     @Override
                     protected void configure(Map<String, String> initProps) throws LocationException {
-                        initProps.put(AtomosRuntime.ATOMOS_BUNDLE_INSTALL, "false");
-                        initProps.put(AtomosRuntime.ATOMOS_BUNDLE_START, "false");
+                        initProps.put(AtomosRuntime.ATOMOS_CONTENT_INSTALL, "false");
+                        initProps.put(AtomosRuntime.ATOMOS_CONTENT_START, "false");
                         initProps.put(BootstrapConstants.LIBERTY_BOOT_PROPERTY, "true");
                         super.configure(initProps);
                     }

@@ -37,15 +37,15 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.atomos.framework.AtomosRuntime;
+import org.apache.felix.atomos.runtime.AtomosRuntime;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.connect.ConnectFramework;
 import org.osgi.framework.connect.ConnectFrameworkFactory;
+import org.osgi.framework.connect.ModuleConnector;
 import org.osgi.framework.launch.Framework;
 
 import com.ibm.ejs.ras.TraceNLS;
@@ -575,7 +575,7 @@ public class FrameworkManager {
         // This exception will have a translated message stating that an unknown exception occurred.
         // This is so bizarre a case that it should never happen.
         try {
-            Framework fwk = fwkFactory.newFramework(config.getFrameworkProperties(), getConnectFactory());
+            Framework fwk = fwkFactory.newFramework(config.getFrameworkProperties(), getModuleConnector());
             if (fwk == null)
                 return null;
             fwk.start();
@@ -592,9 +592,9 @@ public class FrameworkManager {
         }
     }
 
-    private ConnectFramework getConnectFactory() {
+    private ModuleConnector getModuleConnector() {
         if (atomosRuntime != null) {
-            return ((AtomosRuntime) atomosRuntime).newConnectFramework();
+            return ((AtomosRuntime) atomosRuntime).getModuleConnector();
         }
         return null;
     }

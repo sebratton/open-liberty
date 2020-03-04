@@ -45,4 +45,4 @@ publish.wlp.jar.disabled: true
 	com.ibm.ws.org.eclipse.equinox.region;version=latest,\
 	com.ibm.ws.org.apache.aries.util;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.ws.org.atomos:atomos.framework;verson=0.0.1
+	org.apache.felix.atomos.runtime;version=latest

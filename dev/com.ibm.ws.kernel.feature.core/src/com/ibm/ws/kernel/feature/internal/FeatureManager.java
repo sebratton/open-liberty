@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.atomos.framework.AtomosRuntime;
+import org.apache.felix.atomos.runtime.AtomosRuntime;
 import org.eclipse.equinox.region.RegionDigraph;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -491,7 +491,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * @param locationService
      *                            a location service
      */
-    protected void unsetLocationService(WsLocationAdmin locationService) {}
+    protected void unsetLocationService(WsLocationAdmin locationService) {
+    }
 
     public WsLocationAdmin getLocationService() {
         return locationService;
@@ -523,7 +524,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     /**
      *
      */
-    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {}
+    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
+    }
 
     /**
      * Inject a <code>EventAdmin</code> service instance.
@@ -538,7 +540,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetEventAdminService(EventAdmin eventAdminService) {}
+    protected void unsetEventAdminService(EventAdmin eventAdminService) {
+    }
 
     /**
      * Inject a <code>RegionDigraph</code> service instance.
@@ -560,7 +563,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetDigraph(RegionDigraph digraph) {}
+    protected void unsetDigraph(RegionDigraph digraph) {
+    }
 
     /**
      * Inject an <code>ExecutorService</code> service instance.
@@ -579,7 +583,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * @param executorService
      *                            an executor service
      */
-    protected void unsetExecutorService(ExecutorService executorService) {}
+    protected void unsetExecutorService(ExecutorService executorService) {
+    }
 
     /**
      * Declarative Services method for setting the variable registry service implementation reference.
@@ -596,7 +601,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {}
+    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {
+    }
 
     @Override
     public void updated(Dictionary<String, ?> configuration) throws ConfigurationException {
@@ -742,10 +748,12 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
                     //register a service that can be looked up for server start.
                     // Need a two phase approach, since ports will be opened for listening on the first phase
-                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {}, new Hashtable<String, Object>());
+                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {
+                    }, new Hashtable<String, Object>());
 
                     // components which needed to wait till ports were opened for listening need to wait till Phase2
-                    bundleContext.registerService(ServerStartedPhase2.class, new ServerStartedPhase2() {}, new Hashtable<String, Object>());
+                    bundleContext.registerService(ServerStartedPhase2.class, new ServerStartedPhase2() {
+                    }, new Hashtable<String, Object>());
 
                     break;
                 default:

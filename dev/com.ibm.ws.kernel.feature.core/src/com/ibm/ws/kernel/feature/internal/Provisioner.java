@@ -36,8 +36,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
-import org.atomos.framework.AtomosBundleInfo;
-import org.atomos.framework.AtomosRuntime;
+import org.apache.felix.atomos.runtime.AtomosContent;
+import org.apache.felix.atomos.runtime.AtomosRuntime;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.equinox.region.RegionDigraph.FilteredRegion;
@@ -353,7 +353,7 @@ public class Provisioner {
                     throw new IllegalStateException("No AtomosRuntime service available!");
                 }
 
-                Optional<AtomosBundleInfo> atomosBundle = atomosRuntime.getBootLayer().findAtomosBundle(fr.getSymbolicName());
+                Optional<AtomosContent> atomosBundle = atomosRuntime.getBootLayer().findAtomosContent(fr.getSymbolicName());
                 Bundle bundle = atomosBundle.map((a) -> {
                     try {
                         return a.install(BUNDLE_LOC_FEATURE_TAG);

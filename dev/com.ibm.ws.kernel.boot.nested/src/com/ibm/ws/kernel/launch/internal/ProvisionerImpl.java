@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.atomos.framework.AtomosLayer;
-import org.atomos.framework.AtomosRuntime;
+import org.apache.felix.atomos.runtime.AtomosLayer;
+import org.apache.felix.atomos.runtime.AtomosRuntime;
 import org.eclipse.osgi.container.Module;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -167,7 +167,7 @@ public class ProvisionerImpl implements Provisioner {
         frameworkStartLevel = bundleCtx.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).adapt(FrameworkStartLevel.class);
         frameworkStartLevel.setInitialBundleStartLevel(KernelStartLevel.ACTIVE.getLevel());
 
-        atomosRuntime = new ServiceTracker<>(context, "org.atomos.framework.AtomosRuntime", null);
+        atomosRuntime = new ServiceTracker<>(context, "org.apache.felix.atomos.runtime.AtomosRuntime", null);
         atomosRuntime.open();
     }
 
@@ -348,7 +348,7 @@ public class ProvisionerImpl implements Provisioner {
         }
         Bundle b;
         try {
-            b = bootLayer.findAtomosBundle(kernelBundle.getSymbolicName()).map((a) -> {
+            b = bootLayer.findAtomosContent(kernelBundle.getSymbolicName()).map((a) -> {
                 try {
                     return a.install(BUNDLE_LOC_KERNEL_TAG);
                 } catch (BundleException e) {

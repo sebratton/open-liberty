@@ -21,7 +21,7 @@ instrument.disabled: true
 
 
 -buildpath: \
-	com.ibm.ws.org.atomos:atomos.framework;verson=0.0.1,\
+	org.apache.felix.atomos.runtime;version=latest\
 	org.eclipse.osgi;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
