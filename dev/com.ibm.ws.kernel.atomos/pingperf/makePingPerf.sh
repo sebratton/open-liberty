@@ -6,14 +6,23 @@ rm -rf ../../build.image/wlp/usr/servers/defaultServer/
 mkdir -p ../../build.image/wlp/usr/servers/defaultServer/
 
 # copy over server config and feature definition for to prepare for server package
-for x in `find pingPerfApp -type f` 
-do  
-  rm -f ../../build.image/${x/pingPerfApp/wlp}
-  cp $x ../../build.image/${x/pingPerfApp/wlp}
+configName=pingPerf_as_war
+for x in `find $configName` 
+do
+  nameWithWLPSubstituted=${x/${configName}/wlp}
+  if [ -d $x ]; then
+      if [ ! -e ../../build.image/${nameWithWLPSubstituted} ]; then
+          mkdir ../../build.image/${nameWithWLPSubstituted}
+      fi    
+  else       
+      rm -f ../../build.image/${nameWithWLPSubstituted}
+      cp $x ../../build.image/${nameWithWLPSubstituted}
+  fi    
 done
 ../../build.image/wlp/bin/server package defaultServer --archive=`pwd`/build/temp/minifiedPingPerfWlp.zip --include=minify
 
-unzip -q ./build/temp/minifiedPingPerfWlp.zip -d ./build/
+unzip -q ./build/temp/minifiedPingPerfWlp.zip -x */defaultServer/* -d ./build/
+mkdir -p ./build/wlp/usr/servers
 minified_wlp=`pwd`/build/wlp
 rm -r $minified_wlp/lib/extract
 cpl=$minified_wlp/classpath_lib
@@ -51,6 +60,7 @@ rm -rf build/wlp/templates
 
 cat > ./build/launchPingPerf.sh <<- EOF
 	debug=""
+	warFile=""
 	while test \$# -gt 0
 	do
 	    case "\$1" in
@@ -61,13 +71,17 @@ cat > ./build/launchPingPerf.sh <<- EOF
 	            rm -fr $minified_wlp/usr/servers/defaultServer/workarea
 	            echo rm -fr $minified_wlp/usr/servers/defaultServer/workarea
 	            ;;
+	        war)
+	            shift
+	            warFile="\$1"
+	            ;;     
 	    esac
 	    shift
 	done
 	
 	set -xe
 	cd $minified_wlp
-	java \$debug -cp "classpath_lib/*" com.ibm.ws.kernel.atomos.Liberty
+	java \$debug -cp "classpath_lib/*" com.ibm.ws.kernel.atomos.Liberty \$warFile
 EOF
 chmod a+x ./build/launchPingPerf.sh
 echo -e "\n  COMPLETED\n"

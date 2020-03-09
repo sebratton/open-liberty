@@ -1,0 +1,4 @@
+# Set the maximum heap size to 1024m.
+-Xmx128m
+#-Xverify:none
+#-XX:-StackTraceInThrowable
