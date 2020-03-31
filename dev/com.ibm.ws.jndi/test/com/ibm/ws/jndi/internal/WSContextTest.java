@@ -17,6 +17,7 @@ import javax.naming.Reference;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -24,15 +25,23 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 public class WSContextTest {
-    private final Mockery mockery = new Mockery();
+
+    private final Mockery mockery = new Mockery() {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
     private int mockeryId;
     private final BundleContext bundleContext = mockery.mock(BundleContext.class);
+    final WSContextFactory mWSCF = mockery.mock(WSContextFactory.class);
 
     private ServiceReference<?> mockServiceReference(final String objectClass,
                                                      final String origin,
                                                      final String explicitClassName,
                                                      final String refClassName) {
         final ServiceReference<?> ref = mockery.mock(ServiceReference.class, ServiceReference.class + " " + mockeryId++);
+
         mockery.checking(new Expectations() {
             {
                 allowing(ref).getProperty(with(Constants.OBJECTCLASS));
@@ -42,9 +51,11 @@ public class WSContextTest {
                 allowing(ref).getProperty(with(JNDIServiceBinder.OSGI_JNDI_SERVICE_CLASS));
                 will(returnValue(explicitClassName));
                 if (refClassName != null) {
-                    allowing(bundleContext).getService(with(ref));
+                    //allowing(bundleContext).getService(with(ref));
+                    allowing(mWSCF).getService(with(ref));
                     will(returnValue(new Reference(refClassName)));
                 }
+                //allowing(mWSCF).getService(ref);
             }
         });
         return ref;
@@ -52,8 +63,7 @@ public class WSContextTest {
 
     @Test
     public void testResolveObjectClassName() {
-        WSContext c = new WSContext(bundleContext, null, null);
-
+        WSContext c = new WSContext(bundleContext, null, null, mWSCF);
         final String CO = Object.class.getName();
         final String CC = Context.class.getName();
         final String CI = Integer.class.getName();
@@ -97,10 +107,12 @@ public class WSContextTest {
                     }
 
                     @Override
-                    public void setProperties(Dictionary<String, ?> properties) {}
+                    public void setProperties(Dictionary<String, ?> properties) {
+                    }
 
                     @Override
-                    public void unregister() {}
+                    public void unregister() {
+                    }
                 };
             }
         };

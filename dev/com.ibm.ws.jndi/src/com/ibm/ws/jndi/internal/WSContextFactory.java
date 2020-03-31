@@ -13,7 +13,10 @@ package com.ibm.ws.jndi.internal;
 import static com.ibm.ws.jndi.WSNameUtil.normalize;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.Context;
 import javax.naming.Name;
@@ -27,6 +30,7 @@ import javax.naming.spi.ObjectFactory;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 
@@ -45,10 +49,29 @@ public class WSContextFactory implements InitialContextFactory, ObjectFactory {
     /** The bundle that is using this {@link InitialContextFactory}. */
     private BundleContext userContext;
 
+    private final ConcurrentHashMap<ServiceReference<?>, Object> cache = new ConcurrentHashMap<>();
+
     /** called by DS to activate this component */
     protected void activate(ComponentContext cc) {
         Bundle usingBundle = cc.getUsingBundle();
         userContext = usingBundle.getBundleContext();
+    }
+
+    public Object getService(final ServiceReference<?> ref) {
+
+        if (!cache.containsKey(ref)) {
+            Object val = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
+                public Object run() {
+                    return userContext.getService(ref);
+                }
+            });
+            if (val != null) {
+                cache.put(ref, val);
+            }
+            return val;
+        }
+        return cache.get(ref);
     }
 
     ///////////////////////////////////////////
@@ -60,7 +83,7 @@ public class WSContextFactory implements InitialContextFactory, ObjectFactory {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public WSContext getInitialContext(Hashtable env) throws NamingException {
-        return new WSContext(userContext, JNDIServiceBinderHolder.HELPER.root, env);
+        return new WSContext(userContext, JNDIServiceBinderHolder.HELPER.root, env, this);
     }
 
     ///////////////////////////////////
@@ -83,7 +106,7 @@ public class WSContextFactory implements InitialContextFactory, ObjectFactory {
                 Object o = JNDIServiceBinderHolder.HELPER.root.lookup(normalize(name));
                 try {
                     ContextNode node = (ContextNode) o;
-                    return new WSContext(userContext, node, env);
+                    return new WSContext(userContext, node, env, this);
                 } catch (ClassCastException e) {
                     // Auto-FFDC happens here!
                     throw new NotContextException(name);
