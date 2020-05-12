@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with the
  * U.S. Copyright Office.
  */
-package com.ibm.ws.app.manager.wab.configure.fat;
+package com.ibm.ws.app.manager.wab.installer.fat;
 
 import java.util.Collections;
 
@@ -72,7 +72,7 @@ public class ConfigurableWABTests {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.app.manager.wab.configure");
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.app.manager.wab.installer");
         server.setServerConfigurationFile(CONFIG_DEFAULT);
 
         for (String product : PRODUCTS) {

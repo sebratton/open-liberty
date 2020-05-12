@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with the 
  * U.S. Copyright Office.
  */
-package com.ibm.ws.app.manager.wab.configure.fat;
+package com.ibm.ws.app.manager.wab.installer.fat;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
