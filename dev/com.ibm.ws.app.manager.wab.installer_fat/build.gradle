@@ -29,4 +29,5 @@ task copyBundles {
 
 addRequiredLibraries {
 	dependsOn copyBundles
+	dependsOn addJakartaTransformer
 }
