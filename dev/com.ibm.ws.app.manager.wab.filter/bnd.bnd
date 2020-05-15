@@ -1,0 +1,28 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#********************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+-nouses=true
+bVersion=1.0
+
+Bundle-Name: WebSphere OSGi Web Application Filter
+Bundle-SymbolicName: com.ibm.ws.app.manager.wab.filter; singleton:=true
+Bundle-Description: WebSphere OSGi Web Application Filter, version ${bVersion}
+
+Private-Package: com.ibm.ws.app.manager.wab*
+
+Export-Package: com.ibm.ws.app.manager.wab.filter;version=1.0
+
+jakartaeeMe: true
+
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest
