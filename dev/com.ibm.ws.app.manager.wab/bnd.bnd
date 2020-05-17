@@ -36,7 +36,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 instrument.classesExcludes: com/ibm/ws/app/manager/wab/internal/resources/*.class
 
 -buildpath: \
-	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+#	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.org.osgi.core,\

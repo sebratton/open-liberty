@@ -63,6 +63,7 @@ import com.ibm.ws.app.manager.module.internal.ModuleClassLoaderFactory;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
 import com.ibm.ws.app.manager.module.internal.SimpleDeployedAppInfoBase;
+import com.ibm.ws.app.manager.wab.filter.OsgiDirectoryProtectionFilter;
 import com.ibm.ws.app.manager.wab.helper.WABClassInfoHelper;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
@@ -172,7 +173,7 @@ import com.ibm.wsspi.webcontainer.servlet.IServletContext;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           service = {EventHandler.class, RuntimeUpdateListener.class},
+           service = { EventHandler.class, RuntimeUpdateListener.class },
            property = { "service.vendor=IBM", "event.topics=org/osgi/service/web/UNDEPLOYED" })
 public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpdateListener {
 
@@ -182,7 +183,8 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                                                       + "(" + WABConfiguration.CONTEXT_NAME + "=*)"
                                                       + "(" + WABConfiguration.CONTEXT_PATH + "=*))";
 
-    private interface WABLifeCycle {};
+    private interface WABLifeCycle {
+    };
 
     private static final TraceComponent tcWabLifeCycleDebug = Tr.register(WABLifeCycle.class);
 
@@ -347,9 +349,11 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
         ctx = null;
     }
 
+    @Override
     public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
         if (RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
             notification.onCompletion(new CompletionListener<Boolean>() {
+                @Override
                 public void successfulCompletion(Future<Boolean> future, Boolean result) {
                     if (result) {
                         List<Bundle> bundles = new ArrayList<>();
@@ -365,14 +369,16 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                         } finally {
                             wabGroupsLock.unlock();
                         }
-                
+
                         for (Bundle b : bundles) {
                             restart(b);
                         }
                     }
                 }
 
-                public void failedCompletion(Future<Boolean> future, Throwable t) {}
+                @Override
+                public void failedCompletion(Future<Boolean> future, Throwable t) {
+                }
             });
         }
     }
@@ -387,7 +393,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
      * This method is called asynchronously from queued work resulting from
      * WAB bundles entering the STARTING|ACTIVE states as tracked by the {@link WABTracker} and {@link WABTrackerCustomizer}.
      *
-     * @param wab - the tracked {@link WAB} object
+     * @param wab    - the tracked {@link WAB} object
      * @param bundle - the {@link Bundle} to install
      */
     protected boolean installIntoWebContainer(WAB wab) {
@@ -1433,10 +1439,10 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                     fc.setFilterClassName(OsgiDirectoryProtectionFilter.class.getName()); //The new filter class..
                     fc.setDisplayName("OSGI Directory protection filter");
                     fc.setDispatchMode(new int[] { IFilterConfig.FILTER_ERROR, IFilterConfig.FILTER_FORWARD, IFilterConfig.FILTER_INCLUDE, IFilterConfig.FILTER_REQUEST });
-                    fc.setAsyncSupported(true); //Added so that the filter can support Async servlet functionality.  It doesn't affect behaviour for Sync Servlets.
+                    /* seb */ fc.setAsyncSupported(true); //Added so that the filter can support Async servlet functionality.  It doesn't affect behaviour for Sync Servlets.
                     esc.addMappingFilter("/*", fc);
                     //iServletContext.addFilter("/*", new OsgiDirectoryProtectionFilter());
-                    //Register the ServletContext in the service registry
+                    // Register the ServletContext in the service registry
                     wab.registerServletContext(iServletContext);
                 }
                 return null;
@@ -1498,11 +1504,12 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
             return mci;
         }
 
+        @Override
         public DeployedModuleInfo getDeployedModule(ExtendedModuleInfo moduleInfo) {
             DeployedModuleInfo deployedMod = super.getDeployedModule(moduleInfo);
             currentWAB.setDeployedModuleInfo(deployedMod);
 
-            WebAppConfiguration appConfig = (WebAppConfiguration)((WebModuleMetaData)moduleInfo.getMetaData()).getConfiguration();
+            WebAppConfiguration appConfig = (WebAppConfiguration) ((WebModuleMetaData) moduleInfo.getMetaData()).getConfiguration();
             if (appConfig != null) {
                 String virtualHost = currentWAB.getVirtualHost();
                 if (virtualHost != null) {
