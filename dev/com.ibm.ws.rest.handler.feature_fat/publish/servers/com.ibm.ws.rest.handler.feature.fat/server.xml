@@ -1,0 +1,10 @@
+<server description="wab configuration server">
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+		<feature>extension1:feature1</feature>
+		<feature>osgiConsole-1.0</feature>
+    </featureManager>
+
+</server>
