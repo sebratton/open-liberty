@@ -8,12 +8,12 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.aries.jndi.core;1.1.0.ibm20200915-1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.aries.jndi.core;1.1.0.ibm20200926;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 instrument.disabled: true
 
 -buildpath: \
-	org.apache.aries.jndi.core;strategy=exact;version=1.1.0.ibm20200915-1,\
+	org.apache.aries.jndi.core;strategy=exact;version=1.1.0.ibm20200926,\
 	com.ibm.ws.org.apache.aries.jndi.api;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.ws.org.slf4j.api.1.7.7,\
