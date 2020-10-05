@@ -1,6 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jta-1.1
-WLP-DisableAllFeatures-OnConflict: false
+WLP-DisableAllFeatures-OnConflict: off
 visibility=protected
 singleton=true
 IBM-API-Package: javax.transaction;  type="spec", \
