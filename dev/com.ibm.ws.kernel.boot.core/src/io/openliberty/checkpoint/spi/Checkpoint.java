@@ -45,4 +45,12 @@ public interface Checkpoint {
      * @throws SnapshotFailed if the snapshot fails
      */
     void snapshot(Phase phase, File directory) throws SnapshotFailed;
+
+    /**
+     * Basic validation that this platform supports checkpoint
+     *
+     * @return a zero lenth string if this platform supports checkpointing. Otherwise a formatted ERROR
+     *         error message explaining wht checkpointing is not supported.
+     */
+    String isCheckpointSupported();
 }

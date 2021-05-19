@@ -147,4 +147,11 @@ public class CheckpointImpl implements Checkpoint {
     private static SnapshotFailed failedRestore(Exception cause) {
         return new SnapshotFailed(Type.RESTORE_ABORT, "Failed to restore from snapshot.", cause);
     }
+
+    @Override
+    public String isCheckpointSupported() {
+        // TODO Fully implement method. At a minimun should check if running linux at necessary
+        //  level/libraries and return a helpful error message if not
+        return "";
+    }
 }

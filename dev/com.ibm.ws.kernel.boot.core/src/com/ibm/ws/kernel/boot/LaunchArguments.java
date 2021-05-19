@@ -179,6 +179,10 @@ public class LaunchArguments {
                         // special handling for clean: it needs to over-ride a system property
                         initProps.put(BootstrapConstants.INITPROP_OSGI_CLEAN, BootstrapConstants.OSGI_CLEAN_VALUE);
                         System.clearProperty(BootstrapConstants.INITPROP_OSGI_CLEAN);
+                    } else if (argToLower.startsWith("--checkpoint")) {
+                        // checkpoint option will exit jvm once checkpoint is taken
+                        //initProps.put(BootstrapConstants.INITPROP_OSGI_CLEAN, BootstrapConstants.OSGI_CLEAN_VALUE);
+                        //System.clearProperty(BootstrapConstants.INITPROP_OSGI_CLEAN);
                     } else if (isClient && argToLower.equals("--autoacceptsigner")) {
                         initProps.put(BootstrapConstants.AUTO_ACCEPT_SIGNER, "true");
                     } else {
